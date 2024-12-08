@@ -13,6 +13,101 @@ using namespace std;
 // string do_grouping() const { return "\003"; }
 // };
 
+typedef pair<int, int> pii;
+
+void provinsi(vector<vector<pii>>& graf){
+    int arr[46][3] = {
+        {0, 1, 55}, {0, 2, 60}, {0, 3, 65}, {2, 3, 40}, {2, 4, 40}, {2, 5, 45}, {3, 5, 35}, {3, 6, 20}, {4, 5, 45}, {4, 7, 45}, {4, 8, 40}, 
+        {5, 8, 30}, {6, 19, 90}, {7, 8, 50}, {7, 10, 15}, {8, 9, 20}, {10, 11, 15}, {10, 12, 20}, {12, 14, 40}, {13, 14, 12}, {14, 15, 30}, 
+        {15, 16, 15}, {16, 17, 30}, {17, 18, 40}, {18, 33, 100}, {19, 20, 65}, {19, 21, 80}, {20, 22, 50}, {21, 22, 60}, {21, 23, 50}, 
+        {21, 24, 60}, {24, 26, 40}, {24, 27, 30}, {25, 26, 60}, {25, 28, 40}, {26, 29, 45}, {26, 30, 60}, {27, 30, 50}, {29, 31, 100}, 
+        {29, 33, 30}, {31, 32, 60}, {31, 33, 100}, {32, 34, 120}, {32, 35, 50}, {32, 36, 35}, {32, 37, 100}
+    }; 
+
+    graf.clear();
+
+    for(int i = 0; i < 46; i++) {
+        graf[arr[i][0]].emplace_back(arr[i][1], arr[i][2]);
+        graf[arr[i][1]].emplace_back(arr[i][0], arr[i][2]);
+    }
+}
+
+int dijkstra(int jumlahprovinsi, const vector<vector<pii>>& graf, int tujuan) {
+    vector<int> jarak(jumlahprovinsi, numeric_limits<int>::max());
+    jarak[0] = 0; 
+
+    priority_queue<pii, vector<pii>, greater<pii>> antrian; 
+    antrian.push({0, 0}); 
+
+    while (!antrian.empty()) {
+        int provinsiSekarang = antrian.top().first;
+        int jarakSekarang = antrian.top().second;
+        antrian.pop();
+
+        if(provinsiSekarang == tujuan){
+            return jarak[tujuan];
+        }
+
+        if (jarakSekarang > jarak[provinsiSekarang]) {
+            continue;
+        }
+
+        for (const auto& tetangga : graf[provinsiSekarang]) {
+            int provinsiBerikut = tetangga.first;
+            int waktuPerjalanan = tetangga.second;
+            int jarakBaru = jarakSekarang + waktuPerjalanan;
+
+            if (jarakBaru < jarak[provinsiBerikut]) {
+                jarak[provinsiBerikut] = jarakBaru;
+                antrian.push({provinsiBerikut, jarakBaru});
+            }
+
+        }
+    }
+}
+
+int hitungOngkir(int tujuan, const vector<vector<pii>>& graf){
+    int jarakMinimal = dijkstra(38, graf, tujuan);
+
+    switch (jarakMinimal/100){
+    case 0:
+        return 0;
+        break;
+    case 1:
+    case 2:
+        return 10000;
+        break;
+    case 3:
+    case 4:
+        return 15000;
+        break;
+    default:
+        return 20000;
+        break;
+    }
+}
+
+void displayProvinsi(){
+    system("CLS");
+    cout<<"||================================================================================||"<<endl;
+    cout<<"||                            PILIH PROVINSI LOKASI MU                            ||"<<endl;
+    cout<<"||================================================================================||"<<endl;
+    cout<<"|| 0. Medan                   13. Yogyakarta              26. Sulawesi Tengah     ||"<<endl;
+    cout<<"|| 1. Aceh                    14. Jawa Tengah             27. Sulawesi Selatan    ||"<<endl;
+    cout<<"|| 2. Sumatera Barat          15. Jawa Timur              28. Sulawesi Utara      ||"<<endl;
+    cout<<"|| 3. Riau                    16. Bali                    29. Maluku Utara        ||"<<endl;
+    cout<<"|| 4. Bengkulu                17. Nusa Tenggara Barat     30. Sulawesi Tengah     ||"<<endl;
+    cout<<"|| 5. Jambi                   18. Nusa Tenggara Timur     31. Papua Barat         ||"<<endl;
+    cout<<"|| 6. Kepri                   19. Kalimantan Barat        32. Papua               ||"<<endl;
+    cout<<"|| 7. Lampung                 20. Kalimantan Tengah       33. Maluku              ||"<<endl;
+    cout<<"|| 8. Sumatera Selatan        21. Kalimantan Timur        34. Papua Barat Daya    ||"<<endl;
+    cout<<"|| 9. Kep. Bangka Belitung    22. Kalimantan Selatan      35. Papua Pegunungan    ||"<<endl;
+    cout<<"|| 10. Banten                 23. Kalimantan Utara        36. Papua Tengah        ||"<<endl;
+    cout<<"|| 11. Jakarta                24. Sulawesi Barat          37. Papua Selatan       ||"<<endl;
+    cout<<"|| 12. Jawa Barat             25. Gorontalo                                       ||"<<endl;
+    cout<<"||================================================================================||"<<endl;
+}
+
 class Barang {
     public:
         int id[20];
@@ -146,11 +241,20 @@ class RiwayatTransaksi {
 };
 
 int pembayaran(RiwayatTransaksi &riwayat, Barang barang, vector<int> keranjang) {
+    vector<vector<pii>> graf(38);
+    provinsi(graf);
     int total = 0;
+    int tujuan;
     
     for (int i : keranjang)
     {
-        total += barang.harga[i-1];
+        displayProvinsi();
+        do{
+            cin>>tujuan;
+        }while(tujuan < 0 || tujuan > 37);
+        int ongkir = hitungOngkir(tujuan, graf);
+        
+        total += barang.harga[i-1] + ongkir;
         cout << barang.nama[i-1] << " - Rp." << barang.harga[i-1] << endl;
     }
     

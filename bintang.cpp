@@ -64,6 +64,7 @@ int dijkstra(int jumlahprovinsi, const vector<vector<pii>>& graf, int tujuan) {
 
         }
     }
+    return 0;
 }
 
 int hitungOngkir(int tujuan, const vector<vector<pii>>& graf){
@@ -263,30 +264,113 @@ int pembayaran(RiwayatTransaksi &riwayat, Barang barang, vector<int> keranjang) 
     return total;
 }
 
+//function untuk keranjang
+void tampilkanKeranjang(Barang barang, vector<int> &keranjang) {
+    if (keranjang.empty()) {
+        cout << "Keranjang kosong.\n";
+        return;
+    }
+    cout << "\nDaftar Keranjang Belanja:\n";
+    for (int id : keranjang) {
+        cout << "ID: " << id << " - " << barang.nama[id - 1] << " - Rp." << barang.harga[id - 1] << endl;
+    }
+}
+
+void tambahBarang(vector<int> &keranjang, int id, Barang barang) {
+    if (id < 1 || id > 20) {
+        cout << "ID barang tidak valid!\n";
+        return;
+    }
+    keranjang.push_back(id);
+    cout << barang.nama[id - 1] << " berhasil ditambahkan ke keranjang.\n";
+}
+
+void hapusBarang(vector<int> &keranjang, int id, Barang barang) {
+    auto it = find(keranjang.begin(), keranjang.end(), id);
+    if (it != keranjang.end()) {
+        cout << barang.nama[id - 1] << " berhasil dihapus dari keranjang.\n";
+        keranjang.erase(it);
+    } else {
+        cout << "barang dengan ID " << id << " tidak ditemukan di keranjang.\n";
+    }
+}
+// end function untuk keranjang
 int main() {
     Barang barang;
     RiwayatTransaksi riwayat;
     barang.inisialisasi();
 
+    vector<int> keranjang;
     bool ulang = true;
-    do {
-    system("cls");
+
+    while (ulang) {
+        system("cls"); // Bersihkan layar
+        cout << "=======================================" << endl;
+        cout << "||      Menu Keranjang Belanja       ||" << endl;
+        cout << "=======================================" << endl;
+        cout << "|| 1. Lihat Keranjang                ||" << endl;
+        cout << "|| 2. Tambah barang                  ||" << endl;
+        cout << "|| 3. Hapus barang                   ||" << endl;
+        cout << "|| 4. Keluar                         ||" << endl;
+        cout << "=======================================" << endl;
+        cout << "Pilihan Anda: ";
+        int pilihan;
+        cin >> pilihan;
+
+        switch (pilihan) {
+        case 1:
+            tampilkanKeranjang(barang, keranjang);
+            break;
+        case 2: {
+            cout << "Masukkan ID barang yang ingin ditambahkan: ";
+            int id;
+            cin >> id;
+            tambahBarang(keranjang, id, barang);
+            break;
+        }
+        case 3: {
+            cout << "Masukkan ID barang yang ingin dihapus: ";
+            int id;
+            cin >> id;
+            hapusBarang(keranjang, id, barang);
+            break;
+        }
+        case 4:
+            ulang = false;
+            break;
+        default:
+            cout << "Pilihan tidak valid!\n";
+        }
+
+        if (ulang) {
+            cout << "\nTekan Enter untuk melanjutkan...";
+            cin.ignore();
+            cin.get();
+        }
+    }
+
+    cout << "Terima kasih telah berbelanja!\n";
+    return 0;
+
+    // bool ulang = true;
+    // do {
+    // system("cls");
 
     // currency formatter, global tapi (untuk semua int) 😔
     // cout.imbue(locale(cout.getloc(), new group_facet));
 
-    vector<int> arr = {1};
-    cout << pembayaran(riwayat, barang, arr) << endl;
-    cout << "Transaksi berhasil!" << endl;
+    // vector<int> arr = {1};
+    // cout << pembayaran(riwayat, barang, arr) << endl;
+    // cout << "Transaksi berhasil!" << endl;
 
-    cout << "Apakah Anda ingin berbelanja lagi? (y/n) ";
-    char pilihan;
-    cin >> pilihan;
-    if (pilihan == 'n')
-        ulang = false;
-    } while (ulang == true);
+    // cout << "Apakah Anda ingin berbelanja lagi? (y/n) ";
+    // char pilihan;
+    // cin >> pilihan;
+    // if (pilihan == 'n')
+    //     ulang = false;
+    // } while (ulang == true);
 
-    riwayat.tampilkanRiwayat();
+    // riwayat.tampilkanRiwayat();
 
-    return 0;
+    // return 0;
 }

@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+// ARIIQ
 typedef pair<int, int> pii;
 
 void provinsi(vector<vector<pii>>& graf){
@@ -97,20 +98,13 @@ void displayProvinsi(){
     cout<<"||================================================================================||"<<endl;
 }
 
+// PARAN
 struct Produk {
     int id;
     string nama;
     string kategori;
     int harga;
 };
-
-int fungsiHash(int kunci, int maxBarang) {
-    return kunci % maxBarang;
-}
-
-int fungsiHash2(int kunci, int maxBarang) {
-    return 1 + (kunci % (maxBarang - 1));
-}
 
 string toLowerCase(const string& str) {
     string result = str;
@@ -169,6 +163,7 @@ void tampilkanProduk(const vector<Produk>& produk) {
     }
 }
 
+// ANANTA
 void tampilkanKeranjang(const vector<Produk>& produk, const vector<int>& keranjang) {
     if (keranjang.empty()) {
         cout << "Keranjang Anda kosong!" << endl;
@@ -206,6 +201,7 @@ void hapusBarang(vector<int>& keranjang, int id, const vector<Produk>& produk) {
     }
 }
 
+// BINTANG
 class RiwayatTransaksi {
 public:
     vector<int> idTransaksi;

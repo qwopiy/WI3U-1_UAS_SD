@@ -231,12 +231,12 @@ int pembayaran(RiwayatTransaksi &riwayat, vector<Produk> produk, vector<int> ker
     provinsi(graf);
     int total = 0;
     int tujuan;
+    displayProvinsi();
+    do{
+        cin>>tujuan;
+    }while(tujuan < 0 || tujuan > 37);
     
     for (int i : keranjang) {
-        displayProvinsi();
-        do{
-            cin>>tujuan;
-        }while(tujuan < 0 || tujuan > 37);
         int ongkir = hitungOngkir(tujuan, graf);
         
         total += produk[i-1].harga + ongkir;
@@ -285,7 +285,8 @@ int main() {
         cout << "|| 3. Tambah barang                 ||" << endl;
         cout << "|| 4. Hapus barang                  ||" << endl;
         cout << "|| 5. Pembayaran                    ||" << endl;
-        cout << "|| 6. Keluar                        ||" << endl;
+        cout << "|| 6. Tampilkan Riwayat             ||" << endl;
+        cout << "|| 7. Keluar                        ||" << endl;
         cout << "======================================" << endl;
         cout << "Pilihan Anda: ";
         int pilihan;
@@ -298,6 +299,7 @@ int main() {
             case 2: {
                 int subPilihan;
                 do {
+                    system("cls");
                     cout << "====================================" << endl;
                     cout << "|| 1. Tampilkan semua produk      ||\n";
                     cout << "|| 2. Sortir berdasarkan harga    ||\n";
@@ -310,9 +312,11 @@ int main() {
 
                     switch (subPilihan) {
                         case 1:
+                        system("cls");
                             tampilkanProduk(produk);
                             break;
                         case 2: {
+                            system("cls");
                             cout << "Sortir berdasarkan harga (1: Ascending, 2: Descending): ";
                             int sortOrder;
                             cin >> sortOrder;
@@ -322,6 +326,7 @@ int main() {
                             break;
                         }
                         case 3: {
+                            system("cls");
                             cout << "Masukkan kategori produk yang ingin ditampilkan: ";
                             string kategoriInput;
                             cin >> kategoriInput;
@@ -342,6 +347,7 @@ int main() {
                             break;
                         }
                         case 4: {
+                            system("cls");
                             cout << "Masukkan ID produk yang ingin dicari: ";
                             int id;
                             cin >> id;
@@ -386,19 +392,22 @@ int main() {
             case 5: {
                 if (keranjang.empty()) {
                     cout << "Keranjang belanja masih kosong!" << endl;
-                    break;
                 } else {
                     int total = pembayaran(riwayat, produk, keranjang);
                     cout << "Pembayaran sebesar Rp." << total << " telah berhasil dilakukan!" << endl;
                     keranjang.clear();
                 }
+                cout << "\nTekan Enter untuk melanjutkan...";
                 cin.ignore();
                 cin.get();
                 break;
             }
             case 6:
-                cout << "Terima kasih telah berbelanja!" << endl;
+                riwayat.tampilkanRiwayat();
                 break;
+            case 7:
+                cout << "Terima kasih telah berbelanja!" << endl;
+                return 0;
             
             default:
                 cout << "Pilihan tidak valid!\n";

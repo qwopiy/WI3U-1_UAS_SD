@@ -226,6 +226,28 @@ public:
     }
 };
 
+int pembayaran(RiwayatTransaksi &riwayat, vector<Produk> produk, vector<int> keranjang) {
+    vector<vector<pii>> graf(38);
+    provinsi(graf);
+    int total = 0;
+    int tujuan;
+    
+    for (int i : keranjang) {
+        displayProvinsi();
+        do{
+            cin>>tujuan;
+        }while(tujuan < 0 || tujuan > 37);
+        int ongkir = hitungOngkir(tujuan, graf);
+        
+        total += produk[i-1].harga + ongkir;
+        cout << produk[i-1].nama << " - Rp." << produk[i-1].harga << endl;
+    }
+    
+    riwayat.tambahTransaksi(riwayat.idTransaksi.size() + 1, total);
+
+    return total;
+}
+
 int main() {
     vector<Produk> produk = {
         {1, "Smartphone Samsung Galaxy S23", "Elektronik", 12000000},
@@ -262,7 +284,8 @@ int main() {
         cout << "|| 2. Lihat Produk                  ||" << endl;
         cout << "|| 3. Tambah barang                 ||" << endl;
         cout << "|| 4. Hapus barang                  ||" << endl;
-        cout << "|| 5. Keluar                        ||" << endl;
+        cout << "|| 5. Pembayaran                    ||" << endl;
+        cout << "|| 6. Keluar                        ||" << endl;
         cout << "======================================" << endl;
         cout << "Pilihan Anda: ";
         int pilihan;
@@ -360,9 +383,23 @@ int main() {
                 hapusBarang(keranjang, id, produk);
                 break;
             }
-            case 5:
+            case 5: {
+                if (keranjang.empty()) {
+                    cout << "Keranjang belanja masih kosong!" << endl;
+                    break;
+                } else {
+                    int total = pembayaran(riwayat, produk, keranjang);
+                    cout << "Pembayaran sebesar Rp." << total << " telah berhasil dilakukan!" << endl;
+                    keranjang.clear();
+                }
+                cin.ignore();
+                cin.get();
+                break;
+            }
+            case 6:
                 cout << "Terima kasih telah berbelanja!" << endl;
                 break;
+            
             default:
                 cout << "Pilihan tidak valid!\n";
         }
